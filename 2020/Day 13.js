@@ -30,27 +30,5 @@ function calc(busses) {
   return result;
 }
 
-// function primes(n) {
-//   const p = [];
-//   for (let i = 2; i < n; i++) {
-//     if (p.some(x => i % x === 0)) continue;
-//     p.push(i);
-//   }
-
-//   return p;
-// }
-
-// function fact(num) {
-//   if (num === 1) return [];
-//   const p = primes(Math.sqrt(num));
-//   for (let i of p) {
-//     if (num % i === 0) {
-//       return [i, ...fact(num / i)];
-//     }
-//   }
-
-//   return [num];
-// }
-
 console.log('Part 1', min.id * (min.next - earliest));
 console.log('Part 2', calc(busses));
