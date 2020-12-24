@@ -31,36 +31,31 @@ function hash(p1,p2) {
   return `${p1.join(',')}|${p2.join(',')}`;
 }
 
-const cache = {
-  '17,50,14,45,5,42,18,33,7,48,21,39,4,36,1,35,24,32,3,40,9,38,23,27,2,34|43,25,31,8,44,10,41,22,49,12,47,19,46,20,30': 1,
-  '43,25,31,8,44,10,41,22,49,12,47,19,46,20,30|17,50,14,45,5,42,18,33,7,48,21,39,4,36,1,35,24,32,3,40,9,38,23,27,2,34': 1,
-  '17,3,50,45,42,26,48,39,22,5,47,7,40,38,35,10,41,27,34,18,25,21,23,13,43,33,4,1,36|44,9,24,2,15,8,30,12,19,14,49,32,20,6,46,31': 1,
-  '44,9,24,2,15,8,30,12,19,14,49,32,20,6,46,31|17,3,50,45,42,26,48,39,22,5,47,7,40,38,35,10,41,27,34,18,25,21,23,13,43,33,4,1,36': 1
-};
-function playRecursiveCombat(p1, p2, historic = [], gameId = 0) {
-  // if (historic.length % 10 === 0 && gameId === 0) console.log(`round #${historic.length} (${Object.keys(cache).length} cached)`);
-  const h = hash(p1,p2);
-  if (!p2.length) return { winner: 1, deck: p1 };
-  if (!p1.length) return { winner: 2, deck: p2 };
-  if (historic.includes(h)) return { winner: 1, deck: p1, stalling: true };
-  if (p1[0] < p1.length && p2[0] < p2.length) {
-    const subGameHash = hash(p1.slice(1, p1[0]+1), p2.slice(1, p2[0]+1));
-    let subGameWinner = cache[subGameHash];
-    if (!subGameWinner) {
-      const subgame = playRecursiveCombat(p1.slice(1, p1[0]+1),p2.slice(1, p2[0]+1), [], gameId + 1);
-      subGameWinner = subgame.winner;
-      cache[subGameHash] = subgame.winner;
-      cache[subGameHash.split('|').reverse().join('|')] = subgame.winner === 2 || subgame.stalling ? 1 : 2;
+function playRecursiveCombat(p1, p2) {
+  const historic = [];
+  while (p1.length && p2.length)
+  {
+    const h = hash(p1,p2);
+    if (historic.includes(h)) return { winner: 1, deck: p1, stalling: true };
+    const p1Card = p1[0], p2Card = p2[0];
+    let roundWinner = p1Card > p2Card ? 1 : 2;
+    if (p1Card < p1.length && p2Card < p2.length) {
+      roundWinner = playRecursiveCombat(p1.slice(1, p1Card + 1),p2.slice(1, p2Card + 1)).winner;
     }
     
-    return subGameWinner === 1 ?
-      playRecursiveCombat([...p1.slice(1), p1[0], p2[0]], p2.slice(1), [...historic, h], gameId) :
-      playRecursiveCombat(p1.slice(1), [...p2.slice(1), p2[0], p1[0]], [...historic, h], gameId);
+    p1.splice(0, 1);
+    p2.splice(0, 1);
+    if (roundWinner === 1) {
+      p1.push(p1Card, p2Card);
+    } else {
+      p2.push(p2Card, p1Card);
+    }
+
+    historic.push(h);
   }
 
-  return p1[0] > p2[0] ?
-    playRecursiveCombat([...p1.slice(1), p1[0], p2[0]], p2.slice(1), [...historic, h], gameId) :
-    playRecursiveCombat(p1.slice(1), [...p2.slice(1), p2[0], p1[0]], [...historic, h], gameId);
+  if (!p2.length) return { winner: 1, deck: p1 };
+  if (!p1.length) return { winner: 2, deck: p2 };
 }
 
 const recCombatWinner = playRecursiveCombat(players[0].deck, players[1].deck);
