@@ -41,22 +41,6 @@ function getPossibles(tiles, puzzle, i, max) {
   return tiles.find(t => t.tile === puzzle[i-1]).possibles.flat();
 }
 
-// function getPossibles(tiles, puzzle, i, max) {
-// // Easier to understand but less performant due lack of cached values
-//   const result = [...tiles.map(t => t.tile)];
-//   if (i >= max) {
-//     const top = tiles.find(t => t.tile === puzzle[i - max]).possibles.flat();
-//     result.filter(t => top.includes(t));
-//   }
-
-//   if (i % max !== 0) {
-//     const left = tiles.find(t => t.tile === puzzle[i-1]).possibles.flat();
-//     result.filter(t => left.includes(t));
-//   }
-
-//   return result;
-// }
-
 function calculate(tiles, puzzle, i, max) {
   if (puzzle.length === tiles.length) return [...puzzle];
   const tileIds = getPossibles(tiles, puzzle, i, max).filter(id => !puzzle.includes(id));
