@@ -33,7 +33,7 @@ const parsedLines = data.map(parseLine);
 const incorrect = parsedLines.filter(l => typeof l === 'string');
 const resP1 = incorrect.map(l => incorrectPoints[l]).reduce((a, c) => a + c, 0);
 
-console.log('Part 1 (392367)', resP1);
+console.log('Part 1', resP1);
 
 const incompletePoints = {
   ')': 1,
@@ -46,4 +46,4 @@ const incompletePoints = {
 const incomplete = parsedLines.filter(l => typeof l !== 'string');
 const resP2 = incomplete.map(l => l.reduce((acc, cur) => acc * 5 + incompletePoints[cur], 0)).sort((a, b ) => a - b);
 
-console.log('Part2', resP2[(resP2.length - 1) / 2]);
+console.log('Part 2', resP2[(resP2.length - 1) / 2]);
