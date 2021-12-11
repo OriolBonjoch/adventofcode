@@ -2,7 +2,7 @@ const fs = require('fs');
 const data = fs
   .readFileSync('data.txt', 'utf8')
   .split(/[\r\n]{2}/g)
-  .map((l) => l.split(''));
+  .map((l) => l.split('').map((n) => parseInt(n)));
 
 const forEachInMatrix = (matrix, callback) => {
   for (let i = 0; i < matrix.length; i++) {
@@ -14,8 +14,8 @@ const forEachInMatrix = (matrix, callback) => {
 
 const light = (matrix, i, j) => {
   if (i < 0 || i >= matrix.length || j < 0 || j >= matrix[0].length) return;
-  if (['A', 'B'].indexOf(matrix[i][j]) !== -1) return;
-  matrix[i][j] = matrix[i][j] === '9' ? 'A' : `${parseInt(matrix[i][j]) + 1}`;
+  if (matrix[i][j] > 9) return;
+  matrix[i][j] = matrix[i][j] + 1;
 };
 
 function flashes(matrix) {
@@ -25,9 +25,9 @@ function flashes(matrix) {
   while (stepLight) {
     stepLight = false;
     forEachInMatrix(matrix, (i, j) => {
-      if (matrix[i][j] !== 'A') return;
+      if (matrix[i][j] !== 10) return;
       stepLight = true;
-      matrix[i][j] = 'B';
+      matrix[i][j] = 11;
       light(matrix, i - 1, j - 1);
       light(matrix, i, j - 1);
       light(matrix, i + 1, j - 1);
@@ -41,8 +41,8 @@ function flashes(matrix) {
 
   let total = 0;
   forEachInMatrix(matrix, (i, j) => {
-    if (matrix[i][j] === 'A' || matrix[i][j] === 'B') {
-      matrix[i][j] = '0';
+    if (matrix[i][j] > 9) {
+      matrix[i][j] = 0;
       total++;
     }
   });
