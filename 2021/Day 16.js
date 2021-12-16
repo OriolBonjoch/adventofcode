@@ -1,4 +1,3 @@
-const util = require('util');
 const fs = require('fs');
 const data = fs
   .readFileSync('data.txt', 'utf8')
@@ -64,18 +63,21 @@ function sumVersion(commands) {
 
 const [results] = process(data);
 
-// console.log(util.inspect(results, false, null, true));
 console.log('Part 1', sumVersion(results));
 
 function calculate(command)
 {
-  const n = (command.children || []).map(c => calculate(c));
+  if (command.type === 4) {
+    return command.value;
+  }
+
+  const n = command.children.map(c => calculate(c));
   switch (command.type) {
     case 0: return n.reduce((acc, cur) => acc + cur, 0);
     case 1: return n.reduce((acc, cur) => acc * cur, 1);
     case 2: return n.reduce((acc, cur) => acc < cur ? acc : cur, n[0]);
     case 3: return n.reduce((acc, cur) => acc > cur ? acc : cur, n[0]);
-    case 4: return command.value;
+
     case 5: return n[0] > n[1] ? 1 : 0;
     case 6: return n[0] < n[1] ? 1 : 0;
     case 7: return n[0] === n[1] ? 1 : 0;
