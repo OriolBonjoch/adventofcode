@@ -4,7 +4,12 @@ const imageEnhancement = data[0];
 const inputImage = data.slice(2).map((l) => l.split(''));
 
 function getSquare(image, pi, pj, step) {
-  const empty = imageEnhancement[0] === '#' && step % 2 ? '1' : '0';
+  const empty =
+    imageEnhancement[0] === '.'
+      ? '0'
+      : imageEnhancement[511] === '.'
+      ? step % 2 ? '1' : '0'
+      : step ? '1' : '0';
   const binary = [pi - 1, pi, pi + 1]
     .flatMap((i) =>
       i < 0 || i >= image.length
