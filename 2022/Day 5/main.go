@@ -63,7 +63,7 @@ func main() {
 
 	result1 := ""
 	result2 := ""
-	for i, _ := range stack1 {
+	for i := range stack1 {
 		if len(stack1[i]) > 0 {
 			result1 += string(stack1[i][0])
 		}
